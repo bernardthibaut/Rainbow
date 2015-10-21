@@ -5,6 +5,7 @@ public enum ID {
 
 	Player(),
 	Obstacle(),
-	Trail();
+	Trail(), 
+	Healthkit();
 
 }

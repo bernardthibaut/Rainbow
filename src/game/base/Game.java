@@ -2,6 +2,8 @@ package game.base;
 
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.Random;
@@ -12,7 +14,7 @@ import org.newdawn.slick.SlickException;
 public class Game extends Canvas implements Runnable {
 
 	// Size of the window
-	public static final int WIDTH = 640, HEIGHT = WIDTH / 12 * 9;
+	public static final int WIDTH = 980, HEIGHT = WIDTH / 12 * 9;
 
 	private Thread thread;
 	private boolean running = false;
@@ -24,6 +26,8 @@ public class Game extends Canvas implements Runnable {
 	private HUD hud;
 	private Spawn spawner;
 	private Menu menu;
+
+	private Color backgroundColor = new Color(200, 200, 200);
 
 	public static STATE gameState = STATE.Menu;
 
@@ -73,14 +77,17 @@ public class Game extends Canvas implements Runnable {
 		}
 		Graphics g = bs.getDrawGraphics();
 
-		g.setColor(Color.WHITE);
+		// Background
+		g.setColor(Color.white);
+
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 
 		handler.render(g);
 
 		if (paused) {
 			g.setColor(Color.black);
-			g.drawString("PAUSED", 100, 100);
+			g.setFont(new Font("arial", 0, 32));
+			g.drawString("PAUSED", 415, 350);
 		}
 
 		if (gameState == STATE.Game) {

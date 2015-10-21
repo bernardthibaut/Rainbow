@@ -30,11 +30,13 @@ public class Spawn {
 		if (cdSpawn > 0) {
 			cdSpawn--;
 		} else {
-			int position = r.nextInt(4);
-			if (position != 0)
-				handler.addObject(new Obstacle(Game.WIDTH, Game.HEIGHT - 60, ID.Obstacle, handler));
-			else
+			int position = r.nextInt(100);
+			if (position < 10)
+				handler.addObject(new HealthKit(Game.WIDTH, Game.HEIGHT - 120, ID.Healthkit, hud));
+			else if (position < 40)
 				handler.addObject(new Obstacle(Game.WIDTH, Game.HEIGHT - 100, ID.Obstacle, handler));
+			else
+				handler.addObject(new Obstacle(Game.WIDTH, Game.HEIGHT - 60, ID.Obstacle, handler));
 			cdSpawn = r.nextInt(20) + 20;
 		}
 	}

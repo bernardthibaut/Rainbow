@@ -3,6 +3,7 @@ package game.base;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Random;
@@ -13,6 +14,14 @@ public class Menu extends MouseAdapter {
 	private Handler handler;
 	private HUD hud;
 	private Random r = new Random();
+
+	private Color colorTitle = new Color(0, 0, 0);
+
+	private Rectangle play = new Rectangle((Game.WIDTH / 5) * 2, Game.HEIGHT / 4, Game.WIDTH / 5, Game.HEIGHT / 5);
+	private Rectangle help = new Rectangle((Game.WIDTH / 5) * 2, (Game.HEIGHT / 4) * 2 - 20, Game.WIDTH / 5,
+			Game.HEIGHT / 5);
+	private Rectangle quit = new Rectangle((Game.WIDTH / 5) * 2, (Game.HEIGHT / 4) * 3 - 40, Game.WIDTH / 5,
+			Game.HEIGHT / 5);
 
 	public Menu(Game game, Handler handler, HUD hud) {
 		this.game = game;
@@ -26,7 +35,7 @@ public class Menu extends MouseAdapter {
 
 		if (Game.gameState == STATE.Menu) {
 			// play button
-			if (mouseOver(mx, my, 210, 150, 200, 64)) {
+			if (mouseOver(mx, my, play)) {
 				Game.gameState = STATE.Game;
 				handler.addObject(new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler));
 				handler.clearEnemys();
@@ -35,22 +44,22 @@ public class Menu extends MouseAdapter {
 			}
 
 			// help button
-			if (mouseOver(mx, my, 210, 250, 200, 64)) {
+			if (mouseOver(mx, my, help)) {
 				Game.gameState = STATE.Help;
 
 				playSound();
 			}
 
 			// quit button
-			if (mouseOver(mx, my, 210, 350, 200, 64)) {
+			if (mouseOver(mx, my, quit)) {
 				System.exit(1);
 			}
 		}
 
 		// back button for help
 		if (Game.gameState == STATE.Help) {
-			if (mouseOver(mx, my, 210, 350, 200, 64)) {
-				game.gameState = STATE.Menu;
+			if (mouseOver(mx, my, quit)) {
+				Game.gameState = STATE.Menu;
 				playSound();
 				return;
 			}
@@ -58,7 +67,7 @@ public class Menu extends MouseAdapter {
 
 		// retry button
 		if (Game.gameState == STATE.End) {
-			if (mouseOver(mx, my, 210, 350, 200, 64)) {
+			if (mouseOver(mx, my, quit)) {
 				Game.gameState = STATE.Game;
 				hud.setLevel(1);
 				hud.setScore(0);
@@ -79,9 +88,9 @@ public class Menu extends MouseAdapter {
 
 	}
 
-	private boolean mouseOver(int mx, int my, int x, int y, int width, int height) {
-		if (mx > x && mx < x + width)
-			if (my > y && my < y + height)
+	private boolean mouseOver(int mx, int my, Rectangle r) {
+		if (mx > r.x && mx < r.x + r.width)
+			if (my > r.y && my < r.y + r.height)
 				return true;
 			else
 				return false;
@@ -94,27 +103,34 @@ public class Menu extends MouseAdapter {
 	}
 
 	public void render(Graphics g) {
+		Font fnt = new Font("arial", 1, 75);
+		Font fnt2 = new Font("arial", 1, 40);
+		Font fnt3 = new Font("arial", 1, 20);
 		if (Game.gameState == STATE.Menu) {
-			Font fnt = new Font("arial", 1, 50);
-			Font fnt2 = new Font("arial", 1, 30);
 
 			g.setFont(fnt);
-			g.setColor(Color.black);
-			g.drawString("Game", 240, 70);
+			int red = colorTitle.getRed() + r.nextInt(5) - 2;
+			int green = colorTitle.getGreen() + r.nextInt(5) - 2;
+			int blue = colorTitle.getBlue() + r.nextInt(5) - 2;
+			red = (int) Game.clamp(red, 50, 255);
+			green = (int) Game.clamp(green, 50, 255);
+			blue = (int) Game.clamp(blue, 50, 255);
+
+			colorTitle = new Color(red, green, blue);
+			g.setColor(colorTitle);
+			g.drawString("Rainbow", 335, 115);
 
 			g.setFont(fnt2);
-			g.drawRect(210, 150, 200, 64);
-			g.drawString("Play", 270, 190);
+			g.setColor(Color.black);
+			g.draw3DRect(play.x, play.y, play.width, play.height, true);
+			g.drawString("Play", play.x + 58, play.y + 85);
 
-			g.drawRect(210, 250, 200, 64);
-			g.drawString("Help", 270, 290);
+			g.draw3DRect(help.x, help.y, help.width, help.height, true);
+			g.drawString("Help", help.x + 58, help.y + 85);
 
-			g.drawRect(210, 350, 200, 64);
-			g.drawString("Quit", 270, 390);
+			g.draw3DRect(quit.x, quit.y, quit.width, quit.height, true);
+			g.drawString("Quit", quit.x + 58, quit.y + 85);
 		} else if (Game.gameState == STATE.Help) {
-			Font fnt = new Font("arial", 1, 50);
-			Font fnt2 = new Font("arial", 1, 30);
-			Font fnt3 = new Font("arial", 1, 20);
 
 			g.setFont(fnt);
 			g.setColor(Color.black);
@@ -124,23 +140,29 @@ public class Menu extends MouseAdapter {
 			g.drawString("Use ZQSD keys to move player", 50, 200);
 
 			g.setFont(fnt2);
-			g.drawRect(210, 350, 200, 64);
-			g.drawString("Back", 270, 390);
+			g.draw3DRect(quit.x, quit.y, quit.width, quit.height, true);
+			g.drawString("Back", (Game.WIDTH / 5) * 2, Game.HEIGHT / 10);
 		} else if (Game.gameState == STATE.End) {
-			Font fnt = new Font("arial", 1, 50);
-			Font fnt2 = new Font("arial", 1, 30);
-			Font fnt3 = new Font("arial", 1, 20);
 
 			g.setFont(fnt);
-			g.setColor(Color.black);
-			g.drawString("Game Over", 180, 70);
+			int red = colorTitle.getRed() + r.nextInt(5) - 2;
+			int green = colorTitle.getGreen() + r.nextInt(5) - 2;
+			int blue = colorTitle.getBlue() + r.nextInt(5) - 2;
+			red = (int) Game.clamp(red, 50, 255);
+			green = (int) Game.clamp(green, 50, 255);
+			blue = (int) Game.clamp(blue, 50, 255);
 
-			g.setFont(fnt3);
-			g.drawString("You lost with a score of: " + hud.getScore(), 175, 200);
+			colorTitle = new Color(red, green, blue);
+			g.setColor(colorTitle);
+			g.drawString("Game Over", 290, 125);
 
 			g.setFont(fnt2);
-			g.drawRect(210, 350, 200, 64);
-			g.drawString("Try Again", 245, 390);
+			g.setColor(Color.black);
+			g.drawString("You lost with a score of: " + hud.getScore(), 225, 300);
+
+			g.setFont(fnt2);
+			g.draw3DRect(quit.x, quit.y, quit.width, quit.height, true);
+			g.drawString("Try Again", 400, 590);
 		}
 
 	}

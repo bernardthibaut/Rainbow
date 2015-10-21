@@ -1,6 +1,7 @@
 package game.base;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 
 public class HUD {
@@ -24,13 +25,16 @@ public class HUD {
 	public void render(Graphics g) {
 		g.setColor(Color.gray);
 		g.fillRect(15, 15, 200, 32);
-		g.setColor(new Color(75, (int) greenValue, 0));
-		g.fillRect(15, 15, (int) HEALTH * 2, 32);
 		g.setColor(Color.black);
-		g.drawRect(15, 15, 200, 32);
+		g.fillRect(13, 13, 604, 36);
+		g.setColor(new Color(150, (int) greenValue, 0));
+		g.fillRect(15, 15, (int) HEALTH * 6, 32);
 
-		g.drawString("Score: " + score, 15, 64);
-		g.drawString("Level: " + level, 15, 80);
+		g.setColor(Color.black);
+		g.setFont(new Font("arial", 0, 32));
+
+		g.drawString("Score: " + score, 225, 85);
+		g.drawString("Level: " + level, 13, 85);
 	}
 
 	public int getScore() {

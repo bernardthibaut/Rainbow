@@ -1,6 +1,5 @@
 package game.base;
 
-
 import java.awt.Canvas;
 import java.awt.Dimension;
 
@@ -22,7 +21,7 @@ public class Window extends Canvas {
 		frame.add(game);
 		frame.setVisible(true);
 		game.start();
-		
+
 	}
 
 }

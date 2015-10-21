@@ -89,6 +89,11 @@ public class Player extends GameObject {
 					tempObject.y += 3;
 					return true;
 				}
+			} else if (tempObject.getId() == ID.Healthkit) {
+				if (getBounds().intersects(tempObject.getBounds())) {
+					HUD.HEALTH += 10;
+					tempObject.setX(-10);
+				}
 			}
 		}
 		return false;
