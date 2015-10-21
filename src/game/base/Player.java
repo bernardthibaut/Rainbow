@@ -31,8 +31,8 @@ public class Player extends GameObject {
 	public void tick() {
 
 		if (isJumping) {
-			if (jumpCurve < 15) {
-				y -= 5;
+			if (jumpCurve < 10) {
+				y -= 7;
 				jumpCurve++;
 			} else {
 				y += 5;

@@ -9,7 +9,7 @@ public class Spawn {
 	private Game game;
 	private Random r = new Random();
 
-	private int cdSpawn = r.nextInt(100) + 50;
+	private int cdSpawn = r.nextInt(20) + 50;
 
 	private int scoreKeep = 0;
 
@@ -30,8 +30,12 @@ public class Spawn {
 		if (cdSpawn > 0) {
 			cdSpawn--;
 		} else {
-			handler.addObject(new Obstacle(Game.WIDTH, Game.HEIGHT - 60, ID.Obstacle, handler));
-			cdSpawn = r.nextInt(50) + 20;
+			int position = r.nextInt(4);
+			if (position != 0)
+				handler.addObject(new Obstacle(Game.WIDTH, Game.HEIGHT - 60, ID.Obstacle, handler));
+			else
+				handler.addObject(new Obstacle(Game.WIDTH, Game.HEIGHT - 100, ID.Obstacle, handler));
+			cdSpawn = r.nextInt(20) + 20;
 		}
 	}
 
