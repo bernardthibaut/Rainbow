@@ -3,13 +3,18 @@ package game.base;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.gui.MouseOverArea;
 
 public class Menu extends MouseAdapter implements MouseMotionListener {
@@ -43,7 +48,8 @@ public class Menu extends MouseAdapter implements MouseMotionListener {
 			// play button
 			if (mouseOver(mx, my, play)) {
 				Game.gameState = STATE.Game;
-				handler.addObject(new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler, game, hud));
+				handler.addObject(
+						new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler, game, hud, game.skin));
 				handler.clearEnemys();
 
 				playSound();
@@ -72,6 +78,20 @@ public class Menu extends MouseAdapter implements MouseMotionListener {
 		// Custom menu
 		if (Game.gameState == STATE.Custom) {
 
+			if (mouseOver(mx, my, new Rectangle(50, 50, 128, 128))) {
+
+				game.skin = null;
+
+				playSound();
+			}
+
+			if (mouseOver(mx, my, new Rectangle(200, 50, 128, 128))) {
+
+				game.skin = SkinsCollection.getSkin("doge");
+
+				playSound();
+			}
+
 		}
 
 		// back button
@@ -91,7 +111,8 @@ public class Menu extends MouseAdapter implements MouseMotionListener {
 				hud.setScore(0);
 				playSound();
 
-				handler.addObject(new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler, game, hud));
+				handler.addObject(
+						new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler, game, hud, game.skin));
 			}
 		}
 
@@ -143,14 +164,9 @@ public class Menu extends MouseAdapter implements MouseMotionListener {
 		if (Game.gameState == STATE.Menu) {
 
 			g.setFont(fnt);
-			int red = colorTitle.getRed() + r.nextInt(5) - 2;
-			int green = colorTitle.getGreen() + r.nextInt(5) - 2;
-			int blue = colorTitle.getBlue() + r.nextInt(5) - 2;
-			red = (int) Game.clamp(red, 50, 255);
-			green = (int) Game.clamp(green, 50, 255);
-			blue = (int) Game.clamp(blue, 50, 255);
 
-			colorTitle = new Color(red, green, blue);
+			mixColorsTitle();
+
 			g.setColor(colorTitle);
 			g.drawString("Rainbow", 335, 115);
 
@@ -170,6 +186,7 @@ public class Menu extends MouseAdapter implements MouseMotionListener {
 			g.setFont(fnt3);
 			g.drawString("Customize!", 275 - xCustom * 6, 95);
 			g.fillRect(275, 60, 55, 55);
+			g.drawImage(game.skin, 275, 60, 55, 55, null);
 
 		} else if (Game.gameState == STATE.Help) {
 
@@ -187,14 +204,9 @@ public class Menu extends MouseAdapter implements MouseMotionListener {
 		} else if (Game.gameState == STATE.End) {
 
 			g.setFont(fnt);
-			int red = colorTitle.getRed() + r.nextInt(5) - 2;
-			int green = colorTitle.getGreen() + r.nextInt(5) - 2;
-			int blue = colorTitle.getBlue() + r.nextInt(5) - 2;
-			red = (int) Game.clamp(red, 50, 255);
-			green = (int) Game.clamp(green, 50, 255);
-			blue = (int) Game.clamp(blue, 50, 255);
 
-			colorTitle = new Color(red, green, blue);
+			mixColorsTitle();
+
 			g.setColor(colorTitle);
 			g.drawString("Game Over", 290, 125);
 
@@ -206,16 +218,41 @@ public class Menu extends MouseAdapter implements MouseMotionListener {
 			g.drawRect(quit.x, quit.y, quit.width, quit.height);
 			g.drawString("Try Again", 400, 590);
 		} else if (Game.gameState == STATE.Custom) {
+
+			for (int i = 50; i < 850; i += 150) {
+				for (int j = 50; j < 500; j += 150) {
+					g.setColor(Color.black);
+					g.fillRect(i, j, 128, 128);
+					g.setColor(Color.white);
+					g.setFont(fnt);
+					g.drawString("?", i + 40, j + 90);
+				}
+			}
+
+			mixColorsTitle();
 			g.setColor(colorTitle);
 
-			g.fillRect(290, 50, 400, 400);
+			g.fillRect(50, 50, 128, 128);
+			g.drawImage(SkinsCollection.getSkin("doge"), 200, 50, null);
 
+			g.setColor(Color.black);
 			g.setFont(fnt2);
 			g.drawRect(quit.x, quit.y, quit.width, quit.height);
 			g.drawString("Back", 445, 590);
 
 		}
 
+	}
+
+	public void mixColorsTitle() {
+		int red = colorTitle.getRed() + r.nextInt(5) - 2;
+		int green = colorTitle.getGreen() + r.nextInt(5) - 2;
+		int blue = colorTitle.getBlue() + r.nextInt(5) - 2;
+		red = (int) Game.clamp(red, 50, 255);
+		green = (int) Game.clamp(green, 50, 255);
+		blue = (int) Game.clamp(blue, 50, 255);
+
+		colorTitle = new Color(red, green, blue);
 	}
 
 }

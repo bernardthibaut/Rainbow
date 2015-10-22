@@ -2,6 +2,7 @@ package game.base;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.Random;
 
@@ -18,11 +19,14 @@ public class Player extends GameObject {
 
 	private Color color = new Color(red, green, blue);
 
-	public Player(int x, int y, ID id, Handler handler, Game game, HUD hud) {
+	private Image skin;
+
+	public Player(int x, int y, ID id, Handler handler, Game game, HUD hud, Image skin) {
 		super(x, y, id);
 		this.handler = handler;
 		this.game = game;
 		this.hud = hud;
+		this.skin = skin;
 
 		yInit = y;
 
@@ -121,6 +125,7 @@ public class Player extends GameObject {
 	public void render(Graphics g) {
 		g.setColor(color);
 		g.fillRect((int) x, (int) y, size, size);
+		g.drawImage(skin, (int) x, (int) y, size, size, null);
 		g.setColor(new Color(r.nextInt(100) + 100, r.nextInt(100) + 100, r.nextInt(100) + 100));
 		g.fillRect((int) x, (int) y - 15, (int) (0.32 * doubleJump), 5);
 	}

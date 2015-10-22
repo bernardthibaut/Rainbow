@@ -7,6 +7,7 @@ public enum ID {
 	Obstacle(),
 	Trail(),
 	RandomBonus(),
-	Healthkit();
+	Healthkit(), 
+	DogeQuote();
 
 }

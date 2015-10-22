@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferStrategy;
 import java.util.Random;
 
@@ -29,6 +30,8 @@ public class Game extends Canvas implements Runnable {
 
 	private Color backgroundColor = Color.white;
 	public int flash = 0;
+	
+	public Image skin;
 
 	public static STATE gameState = STATE.Menu;
 
@@ -37,7 +40,7 @@ public class Game extends Canvas implements Runnable {
 
 		if (gameState == STATE.Game) {
 
-			handler.addObject(new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler, this, hud));
+			handler.addObject(new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler, this, hud, skin));
 
 		} else {
 
@@ -63,7 +66,7 @@ public class Game extends Canvas implements Runnable {
 				}
 			}
 
-		} else if (gameState == STATE.Menu || gameState == STATE.End) {
+		} else {
 			menu.tick();
 			handler.tick();
 		}
@@ -131,6 +134,8 @@ public class Game extends Canvas implements Runnable {
 		this.addMouseMotionListener(menu);
 		// Load the audio files in the res folder
 		AudioPlayer.load();
+		// Load the image files for the skins
+		SkinsCollection.load();
 		// Create the window which will be seen
 		new Window(WIDTH, HEIGHT, "Game", this);
 		// Create the class which manage the spawn of the objects
