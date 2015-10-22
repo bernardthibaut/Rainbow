@@ -6,9 +6,13 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import java.util.Random;
 
-public class Menu extends MouseAdapter {
+import org.newdawn.slick.gui.MouseOverArea;
+
+public class Menu extends MouseAdapter implements MouseMotionListener {
 
 	private Game game;
 	private Handler handler;
@@ -16,6 +20,8 @@ public class Menu extends MouseAdapter {
 	private Random r = new Random();
 
 	private Color colorTitle = new Color(0, 0, 0);
+	private int xCustom = 0;
+	private Rectangle custom = new Rectangle(275, 60, 55, 55);
 
 	private Rectangle play = new Rectangle((Game.WIDTH / 5) * 2, Game.HEIGHT / 4, Game.WIDTH / 5, Game.HEIGHT / 5);
 	private Rectangle help = new Rectangle((Game.WIDTH / 5) * 2, (Game.HEIGHT / 4) * 2 - 20, Game.WIDTH / 5,
@@ -37,7 +43,7 @@ public class Menu extends MouseAdapter {
 			// play button
 			if (mouseOver(mx, my, play)) {
 				Game.gameState = STATE.Game;
-				handler.addObject(new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler));
+				handler.addObject(new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler, game, hud));
 				handler.clearEnemys();
 
 				playSound();
@@ -54,10 +60,22 @@ public class Menu extends MouseAdapter {
 			if (mouseOver(mx, my, quit)) {
 				System.exit(1);
 			}
+
+			// customize button
+			if (mouseOver(mx, my, custom)) {
+				Game.gameState = STATE.Custom;
+
+				playSound();
+			}
 		}
 
-		// back button for help
-		if (Game.gameState == STATE.Help) {
+		// Custom menu
+		if (Game.gameState == STATE.Custom) {
+
+		}
+
+		// back button
+		if (Game.gameState == STATE.Help || Game.gameState == STATE.Custom) {
 			if (mouseOver(mx, my, quit)) {
 				Game.gameState = STATE.Menu;
 				playSound();
@@ -73,10 +91,26 @@ public class Menu extends MouseAdapter {
 				hud.setScore(0);
 				playSound();
 
-				handler.addObject(new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler));
+				handler.addObject(new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler, game, hud));
 			}
 		}
 
+	}
+
+	public void mouseMoved(MouseEvent e) {
+		int mx = e.getX();
+		int my = e.getY();
+
+		if (mouseOver(mx, my, custom)) {
+			if (xCustom < 20) {
+				xCustom++;
+			}
+
+		} else {
+			if (xCustom > 0)
+				xCustom--;
+
+		}
 	}
 
 	private void playSound() {
@@ -105,7 +139,7 @@ public class Menu extends MouseAdapter {
 	public void render(Graphics g) {
 		Font fnt = new Font("arial", 1, 75);
 		Font fnt2 = new Font("arial", 1, 40);
-		Font fnt3 = new Font("arial", 1, 20);
+		Font fnt3 = new Font("arial", 1, xCustom);
 		if (Game.gameState == STATE.Menu) {
 
 			g.setFont(fnt);
@@ -122,26 +156,34 @@ public class Menu extends MouseAdapter {
 
 			g.setFont(fnt2);
 			g.setColor(Color.black);
-			g.draw3DRect(play.x, play.y, play.width, play.height, true);
+			g.drawRect(play.x, play.y, play.width, play.height);
 			g.drawString("Play", play.x + 58, play.y + 85);
 
-			g.draw3DRect(help.x, help.y, help.width, help.height, true);
+			g.drawRect(help.x, help.y, help.width, help.height);
 			g.drawString("Help", help.x + 58, help.y + 85);
 
-			g.draw3DRect(quit.x, quit.y, quit.width, quit.height, true);
+			g.drawRect(quit.x, quit.y, quit.width, quit.height);
 			g.drawString("Quit", quit.x + 58, quit.y + 85);
+
+			// Customize your character
+			g.setColor(colorTitle);
+			g.setFont(fnt3);
+			g.drawString("Customize!", 275 - xCustom * 6, 95);
+			g.fillRect(275, 60, 55, 55);
+
 		} else if (Game.gameState == STATE.Help) {
 
 			g.setFont(fnt);
 			g.setColor(Color.black);
-			g.drawString("Help", 240, 70);
-
-			g.setFont(fnt3);
-			g.drawString("Use ZQSD keys to move player", 50, 200);
+			g.drawString("Help", 405, 70);
 
 			g.setFont(fnt2);
-			g.draw3DRect(quit.x, quit.y, quit.width, quit.height, true);
-			g.drawString("Back", (Game.WIDTH / 5) * 2, Game.HEIGHT / 10);
+			g.drawString("Use ZQSD keys to move your", 220, 250);
+			g.drawString("character and dodge the enemies", 180, 310);
+
+			g.setFont(fnt2);
+			g.drawRect(quit.x, quit.y, quit.width, quit.height);
+			g.drawString("Back", 445, 590);
 		} else if (Game.gameState == STATE.End) {
 
 			g.setFont(fnt);
@@ -161,8 +203,17 @@ public class Menu extends MouseAdapter {
 			g.drawString("You lost with a score of: " + hud.getScore(), 225, 300);
 
 			g.setFont(fnt2);
-			g.draw3DRect(quit.x, quit.y, quit.width, quit.height, true);
+			g.drawRect(quit.x, quit.y, quit.width, quit.height);
 			g.drawString("Try Again", 400, 590);
+		} else if (Game.gameState == STATE.Custom) {
+			g.setColor(colorTitle);
+
+			g.fillRect(290, 50, 400, 400);
+
+			g.setFont(fnt2);
+			g.drawRect(quit.x, quit.y, quit.width, quit.height);
+			g.drawString("Back", 445, 590);
+
 		}
 
 	}

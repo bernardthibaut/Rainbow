@@ -35,9 +35,10 @@ public class Handler {
 			GameObject tempObject = object.get(i);
 
 			if (tempObject.getId() == ID.Player) {
+				GameObject p = tempObject;
 				object.clear();
 				if (Game.gameState != STATE.End)
-					addObject(new Player((int) tempObject.getX(), (int) tempObject.getY(), ID.Player, this));
+					addObject(p);
 			}
 		}
 	}

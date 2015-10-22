@@ -9,6 +9,8 @@ public class Player extends GameObject {
 
 	Random r = new Random();
 	Handler handler;
+	private Game game;
+	private HUD hud;
 
 	private int red = r.nextInt(150) + 50;
 	private int green = r.nextInt(150) + 50;
@@ -16,9 +18,11 @@ public class Player extends GameObject {
 
 	private Color color = new Color(red, green, blue);
 
-	public Player(int x, int y, ID id, Handler handler) {
+	public Player(int x, int y, ID id, Handler handler, Game game, HUD hud) {
 		super(x, y, id);
 		this.handler = handler;
+		this.game = game;
+		this.hud = hud;
 
 		yInit = y;
 
@@ -74,7 +78,7 @@ public class Player extends GameObject {
 
 		// Code to do if the player collide with an ennemy
 		if (collision()) {
-			HUD.HEALTH -= 2;
+			HUD.HEALTH -= 1.0 / 3.0 * 100;
 		}
 	}
 
@@ -84,15 +88,30 @@ public class Player extends GameObject {
 
 			if (tempObject.getId() == ID.Obstacle) {
 				if (getBounds().intersects(tempObject.getBounds())) {
-					tempObject.size -= 3;
-					tempObject.x += 3;
-					tempObject.y += 3;
-					return true;
+					if (!hud.hasShield) {
+						tempObject.setX(-20);
+						return true;
+					} else {
+						tempObject.setX(-20);
+						hud.hasShield = false;
+					}
+
 				}
 			} else if (tempObject.getId() == ID.Healthkit) {
 				if (getBounds().intersects(tempObject.getBounds())) {
-					HUD.HEALTH += 10;
-					tempObject.setX(-10);
+					if (HUD.HEALTH == 100)
+						hud.hasShield = true;
+					HUD.HEALTH += 1.0 / 3.0 * 100;
+					HUD.HEALTH = Game.clamp(HUD.HEALTH, 0, 100);
+
+					tempObject.setX(-20);
+				}
+			} else if (tempObject.getId() == ID.RandomBonus) {
+				if (getBounds().intersects(tempObject.getBounds())) {
+
+					handler.clearEnemys();
+					game.flash = 200;
+
 				}
 			}
 		}

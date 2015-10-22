@@ -27,7 +27,8 @@ public class Game extends Canvas implements Runnable {
 	private Spawn spawner;
 	private Menu menu;
 
-	private Color backgroundColor = new Color(200, 200, 200);
+	private Color backgroundColor = Color.white;
+	public int flash = 0;
 
 	public static STATE gameState = STATE.Menu;
 
@@ -36,7 +37,7 @@ public class Game extends Canvas implements Runnable {
 
 		if (gameState == STATE.Game) {
 
-			handler.addObject(new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler));
+			handler.addObject(new Player(Game.WIDTH / 5, Game.HEIGHT - 60, ID.Player, handler, this, hud));
 
 		} else {
 
@@ -78,7 +79,13 @@ public class Game extends Canvas implements Runnable {
 		Graphics g = bs.getDrawGraphics();
 
 		// Background
-		g.setColor(Color.white);
+		if (flash > 0) {
+			backgroundColor = new Color(r.nextInt(55) + 200, r.nextInt(55) + 200, r.nextInt(55) + 200);
+			flash--;
+		} else {
+			backgroundColor = Color.white;
+		}
+		g.setColor(backgroundColor);
 
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 
@@ -92,7 +99,7 @@ public class Game extends Canvas implements Runnable {
 
 		if (gameState == STATE.Game) {
 			hud.render(g);
-		} else if (gameState == STATE.Menu || gameState == STATE.Help || gameState == STATE.End) {
+		} else {
 			menu.render(g);
 		}
 
@@ -121,6 +128,7 @@ public class Game extends Canvas implements Runnable {
 		this.addKeyListener(new KeyInput(handler, this));
 		// Create the actions when you click in the menu
 		this.addMouseListener(menu);
+		this.addMouseMotionListener(menu);
 		// Load the audio files in the res folder
 		AudioPlayer.load();
 		// Create the window which will be seen

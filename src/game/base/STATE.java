@@ -4,5 +4,6 @@ public enum STATE {
 	Menu,
 	Help,
 	Game,
-	End;
+	End, 
+	Custom;
 };
